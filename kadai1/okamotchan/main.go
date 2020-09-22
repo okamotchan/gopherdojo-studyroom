@@ -27,7 +27,7 @@ func setArgs() (map[string]string, error) {
 
 func printUsage() {
 	fmt.Println("使用方法:")
-	fmt.Println("  image_conversion [-from=<ext>] [-to=<ext>] target_directory")
+	fmt.Println("  ./main [-from=<ext>] [-to=<ext>] target_directory")
 	fmt.Println("引数:")
 	fmt.Println("  -from=<ext> 変換前の拡張子", imgconv.ValidImageExt, "(default: jpg)")
 	fmt.Println("  -to=<ext>   変換後の拡張子", imgconv.ValidImageExt, "(default: png)")
@@ -40,7 +40,7 @@ func main() {
 		os.Exit(CodeFailure)
 	}
 
-	err = imgconv.Do(args)
+	err = imgconv.Convert(args)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(CodeFailure)

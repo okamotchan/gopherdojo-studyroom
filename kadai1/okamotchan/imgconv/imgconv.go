@@ -11,14 +11,16 @@ import (
 	"strings"
 )
 
-// 画像ファイルの拡張子
+// ImageExt file extension
 type ImageExt string
 
+// ImageConverter struct
 type ImageConverter struct {
 	from ImageExt
 	to   ImageExt
 }
 
+// Const Image extension
 const (
 	GIF  ImageExt = "gif"
 	JPEG ImageExt = "jpeg"
@@ -26,10 +28,11 @@ const (
 	PNG  ImageExt = "png"
 )
 
+// ValidImageExt var
 var ValidImageExt = []ImageExt{GIF, JPEG, JPG, PNG}
 
-// 画像を変換する
-func Do(args map[string]string) error {
+// Convert image
+func Convert(args map[string]string) error {
 	converter, err := newImageConverter(args["from"], args["to"])
 	if err != nil {
 		return err
@@ -44,12 +47,12 @@ func Do(args map[string]string) error {
 	return nil
 }
 
-// string型にする
+// Make type string
 func (ext ImageExt) toString() string {
 	return string(ext)
 }
 
-// ImageExt型にする
+// To type ImageExt
 func toImageExt(str string) (*ImageExt, error) {
 	if str[0] == '.' {
 		str = str[1:]
@@ -64,7 +67,7 @@ func toImageExt(str string) (*ImageExt, error) {
 	return nil, fmt.Errorf("拡張子が正しくありません: %s", str)
 }
 
-// ImageConverter型を作成する
+// Make type ImageConverter
 func newImageConverter(from, to string) (*ImageConverter, error) {
 	extFrom, err := toImageExt(from)
 	if err != nil {
@@ -79,7 +82,7 @@ func newImageConverter(from, to string) (*ImageConverter, error) {
 	return &ImageConverter{from: *extFrom, to: *extTo}, nil
 }
 
-// 画像を読み込む
+// Read Images
 func (c *ImageConverter) readImage(path string) (image.Image, error) {
 	file, err := os.Open(path)
 	if err != nil {
@@ -94,7 +97,7 @@ func (c *ImageConverter) readImage(path string) (image.Image, error) {
 	return image, nil
 }
 
-// 画像を保存する
+// Save Images
 func (c *ImageConverter) saveImage(image image.Image, path string) error {
 	file, err := os.Create(path)
 	if err != nil {
@@ -120,12 +123,12 @@ func (c *ImageConverter) saveImage(image image.Image, path string) error {
 	return nil
 }
 
-// ファイル名を取得する
+// Get the File name
 func getFileNameWithoutExt(path string) string {
 	return filepath.Base(path[:len(path)-len(filepath.Ext(path))])
 }
 
-// 画像ファイルを変換する
+// Convert the Image file
 func (c *ImageConverter) convert(src string) error {
 	dir := filepath.Dir(src)
 	dst := filepath.Join(dir, fmt.Sprintf("%s.%s", getFileNameWithoutExt(src), c.to.toString()))
@@ -147,7 +150,7 @@ func (c *ImageConverter) convert(src string) error {
 	return nil
 }
 
-// ディレクトリ内の指定された画像ファイルを全て変換する
+// Convert Image file in directory completely
 func (c *ImageConverter) convertAll(dir string) error {
 	walkErr := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
